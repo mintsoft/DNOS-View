@@ -14,6 +14,12 @@
 		margin: 0;
 		padding: 0;
 	}
+	.shutdown {
+		background: #444;
+	}
+	.noshutdown {
+		background: #ddd;
+	}
 </style>
 <script>
 
@@ -52,10 +58,10 @@ function parseConfig(input) {
 			output[states[states.main].name].config = buffer[states.main];
 			
 			if(states[states.main].type == "Vlan") {
-				output[states[states.main].name].tagged_members = [];
-				output[states[states.main].name].untagged_members = [];
+				var tagged_members = [];
+				var untagged_members = [];
 			} else if (states[states.main].type == "Port-channel") {
-				output[states[states.main].name].members = [];
+				var members = [];
 			}
 
 			states.main = "s";
@@ -85,7 +91,7 @@ function renderTo(target, config) {
 
 				var cell = el("td");
 				cell.innerText = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
-				cell.title = i + ": " + JSON.stringify(config[i].config)
+				cell.title = i + ": " + JSON.stringify(config[i].config);
 				switchRows[row].appendChild(cell);
 			}
 			break;
