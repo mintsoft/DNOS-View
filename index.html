@@ -78,7 +78,11 @@ function renderTo(target, config) {
 			case "FastEthernet":
 			case "GigabitEthernet":
 			case "TenGigabitEthernet": {
-				var row = Math.floor((1*config[i].portNum -1 + portsPerSwitch*(config[i].unitNum - 1))/portsPerRow);
+				var row = 2*(config[i].unitNum-1);
+				if(config[i].portNum % 2 == 0) {
+					row += 1;
+				}
+
 				var cell = el("td");
 				cell.innerText = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				cell.title = i + ": " + JSON.stringify(config[i].config)
