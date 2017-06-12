@@ -3,7 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <title>DNOS-View</title>
+<style>
+	table {
+		border: 1px solid black;
+	}
+	td {
+		border: 1px solid black;
+		width: 4em;
+		height: 4em;
+		margin: 0;
+		padding: 0;
+	}
+</style>
 <script>
+
+var portsPerRow = 24;
+var portsPerSwitch = 48;
+
 window.onload = function(e){
 	document.getElementById("go").onclick = function(event){
 		var config = parseConfig(document.getElementById("config").value);
@@ -34,6 +50,14 @@ function parseConfig(input) {
 		} else if (l.match(/^!$/) && states.main=="i") {
 			output[states[states.main].name] = states[states.main];
 			output[states[states.main].name].config = buffer[states.main];
+			
+			if(states[states.main].type == "Vlan") {
+				output[states[states.main].name].tagged_members = [];
+				output[states[states.main].name].untagged_members = [];
+			} else if (states[states.main].type == "Port-channel") {
+				output[states[states.main].name].members = [];
+			}
+
 			states.main = "s";
 		}
 	}
@@ -54,9 +78,9 @@ function renderTo(target, config) {
 			case "FastEthernet":
 			case "GigabitEthernet":
 			case "TenGigabitEthernet": {
-				var row = Math.floor((1*config[i].portNum -1 + 48*(config[i].unitNum - 1))/24);
+				var row = Math.floor((1*config[i].portNum -1 + portsPerSwitch*(config[i].unitNum - 1))/portsPerRow);
 				var cell = el("td");
-				cell.innerText = i;
+				cell.innerText = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				cell.title = i + ": " + JSON.stringify(config[i].config)
 				switchRows[row].appendChild(cell);
 			}
@@ -74,7 +98,7 @@ function renderTo(target, config) {
 			}
 			break;
 			case "Vlan": {
-			
+				
 			}
 			break;
 		}
