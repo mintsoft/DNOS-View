@@ -45,7 +45,7 @@ function renderTo(target, config) {
 	var switchRows = [];
 	var numberOfRows = Object.keys(config).length/24;
 	
-	for(var x=0; x<numberOfRows; ++x) {
+	for(var x=0; x<=numberOfRows; ++x) {
 		switchRows[x] = el("tr");
 	}
 	
@@ -54,9 +54,9 @@ function renderTo(target, config) {
 			case "FastEthernet":
 			case "GigabitEthernet":
 			case "TenGigabitEthernet": {
-				var row = Math.floor((config[i].portNum + 48*(config[i].unitNum - 1))/24);
+				var row = Math.floor((1*config[i].portNum + 48*(config[i].unitNum - 1))/24);
 				var cell = el("td");
-				cell.innerText = config[i].config;
+				cell.innerText = JSON.stringify(config[i].config);
 				switchRows[row].appendChild(cell);
 			}
 			break;
