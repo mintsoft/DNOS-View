@@ -75,14 +75,6 @@ function parseConfig(input) {
 					}
 				}
 			} else if (states[states.main].type == "Port-channel") {
-				var members = [];
-				/*
-					channel-member TenGigabitEthernet 1/47-1/48
-					channel-member TenGigabitEthernet 2/47-2/48
-
-					channel-member TenGigabitEthernet 1/45
-					channel-member TenGigabitEthernet 2/46
-				*/
 				for(var cf in buffer[states.main]) {
 					var cl = buffer[states.main][cf];
 					var matches = cl.match(/^ channel-member ([A-Za-z\-]+) (([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))/);
@@ -133,6 +125,9 @@ function renderTo(target, config) {
 
 				var cell = el("td");
 				cell.innerText = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
+				if(config[i].portChannelMembership) {
+					cell.innerText += config[i].portChannelMembership;
+				}
 				cell.title = i + ": " + JSON.stringify(config[i].config);
 				switchRows[row].appendChild(cell);
 			}
