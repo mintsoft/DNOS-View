@@ -53,7 +53,9 @@ function parseConfig(input) {
 				name: p[1]+" "+p[2]+(p[3] == undefined ? "" : "/"+p[3]),
 				type: p[1],
 				unitNum: p[2],
-				portNum: p[3]
+				portNum: p[3],
+				tagged: [],
+				untagged: []
 			};
 			
 			buffer.i=[];
@@ -64,27 +66,58 @@ function parseConfig(input) {
 			output[states[states.main].name].config = buffer[states.main];
 			
 			if(states[states.main].type == "Vlan") {
-				var tagged_members = [];
-				var untagged_members = [];
 				/*
 				 tagged TenGigabitEthernet 1/35
  				 tagged Port-channel 1,11-18
   				 untagged TenGigabitEthernet 1/5-1/6
  				 untagged TenGigabitEthernet 2/5-2/6
 				*/
-				
+				var matches = undefined;
 				for(var cf in buffer[states.main]) {
-					if(cf.match(/^ tagged /)) {
-						
-					} else if(cf.match(/^ untagged /)) {
+					var cl = buffer[states.main][cf]
+					//(?:(([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))?)|(?:([0-9]+(?:-[0-9]+)?)(?:,([0-9]+(?:-[0-9]+)?))*)
+					if(matches = cl.match(/^ ((?:un)?tagged) ([A-Za-z\-]+) (.*)$/)) {
+						matches;
+						var typeOfMembership = matches[1];
+						var interfaceType = matches[2]
+						var interfaceIds = matches[3];
+						var interfaceSets = interfaceIds.split(",");
+						for(var i=0; i<interfaceSets.length; ++i) {
+							var singleInterfaceOrRange = interfaceSets[i].split("-");
+							if(singleInterfaceOrRange.length==1) {						
+								output[interfaceType+" "+singleInterfaceOrRange[0]][typeOfMembership].push(states[states.main].name);
+							} else if(singleInterfaceOrRange.length==2) {
+								//11-18 or 1/5-1/8
+								var startintf = singleInterfaceOrRange[0].split("/");
 
+								if (startintf.length == 1) {
+									var startnum = singleInterfaceOrRange[0];
+									var endNum = singleInterfaceOrRange[1];
+									for(var iterator=startnum; iterator <= endNum; ++iterator)
+									{
+										output[interfaceType+" "+iterator][typeOfMembership].push(states[states.main].name);
+									}
+								} else if(startintf.length==2) {
+									var startunitNo = startintf[0];
+									var startportNo = startintf[1];
+									var endintf = singleInterfaceOrRange[1].split("/");
+									var endunitno = endintf[0];
+									var endportno = endintf[1];
+
+									for(var iterator=startportNo; iterator <= endportno; ++iterator)
+									{
+										output[interfaceType+" "+startunitNo+"/"+iterator][typeOfMembership].push(states[states.main].name);
+									}
+								}
+							}
+						}
 					}
 				}
 			} else if (states[states.main].type == "Port-channel") {
 				for(var cf in buffer[states.main]) {
 					var cl = buffer[states.main][cf];
-					var matches = cl.match(/^ channel-member ([A-Za-z\-]+) (([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))?/);
-					if(matches) {
+					var matches = undefined;
+					if(matches = cl.match(/^ channel-member ([A-Za-z\-]+) (([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))?/)) {
 						var interfaceName = matches[1];
 						var startUnitNo = matches[3];
 						var startInterfaceNo = matches[4];
@@ -130,9 +163,15 @@ function renderTo(target, config) {
 				}
 
 				var cell = el("td");
-				cell.innerText = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
+				cell.innerHTML = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				if(config[i].portChannelMembership) {
-					cell.innerText += config[i].portChannelMembership;
+					cell.innerHTML += config[i].portChannelMembership;
+				}
+				if(config[i].untagged.length>0) {
+					cell.innerHTML += "<br/>Untagged: "+config[i].untagged.join(", ");
+				}
+				if(config[i].tagged.length>0) {
+					cell.innerHTML += "<br/>Tagged: "+config[i].tagged.join(", ");
 				}
 				cell.title = i + ": " + JSON.stringify(config[i].config);
 				switchRows[row].appendChild(cell);
@@ -144,7 +183,12 @@ function renderTo(target, config) {
 			case "fortyGigE": {
 				var info = el("span");
 				info.className = "interface";
-				info.innerHTML = "<b>"+config[i].name + "</b><br/>" + config[i].config.join("<br/>");
+				info.innerHTML = "<b>"+config[i].name + "</b><br/>" + 
+					config[i].config.join("<br/>") + 
+					"<br/>Untagged:"+
+					config[i].untagged.join(", ")+
+					"<br/><br/>Tagged:"+
+					config[i].tagged.join(", ");
 				otherInfoContainer.appendChild(info)
 			}
 			break;
