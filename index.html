@@ -83,7 +83,7 @@ function parseConfig(input) {
 			} else if (states[states.main].type == "Port-channel") {
 				for(var cf in buffer[states.main]) {
 					var cl = buffer[states.main][cf];
-					var matches = cl.match(/^ channel-member ([A-Za-z\-]+) (([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))/);
+					var matches = cl.match(/^ channel-member ([A-Za-z\-]+) (([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))?/);
 					if(matches) {
 						var interfaceName = matches[1];
 						var startUnitNo = matches[3];
