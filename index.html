@@ -20,6 +20,12 @@
 	.noshutdown {
 		background: #ddd;
 	}
+	.interface {
+		display: inline-block;
+		border: 1px solid black;
+		margin-top: 5px;
+		margin-right: 5px;
+	}
 </style>
 <script>
 
@@ -104,7 +110,7 @@ function parseConfig(input) {
 	return output;
 }
 function renderTo(target, config) {
-	
+	var otherInfoContainer = el("div");
 	var table = el("table");
 	var switchRows = [];
 	var numberOfRows = Object.keys(config).length/24;
@@ -132,10 +138,17 @@ function renderTo(target, config) {
 				switchRows[row].appendChild(cell);
 			}
 			break;
+			case "ManagementEthernet":
+			case "Port-channel":
+			case "Vlan":
 			case "fortyGigE": {
-			
+				var info = el("span");
+				info.className = "interface";
+				info.innerHTML = "<b>"+config[i].name + "</b><br/>" + config[i].config.join("<br/>");
+				otherInfoContainer.appendChild(info)
 			}
 			break;
+			/*
 			case "ManagementEthernet": {
 				
 			}
@@ -146,7 +159,7 @@ function renderTo(target, config) {
 			break;
 			case "Vlan": {
 				
-			}
+			}*/
 			break;
 		}
 	}
@@ -156,6 +169,7 @@ function renderTo(target, config) {
 		table.appendChild(switchRows[x]);
 	}
 	target.appendChild(table);
+	target.appendChild(otherInfoContainer);
 }
 
 function el(tag) { return document.createElement(tag); }
