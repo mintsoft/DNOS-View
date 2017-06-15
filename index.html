@@ -166,6 +166,7 @@ function renderTo(target, config) {
 				cell.innerHTML = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				if(config[i].portChannelMembership) {
 					cell.innerHTML += config[i].portChannelMembership;
+					cell.className += config[i].portChannelMembership.replace(" ","");
 				}
 				if(config[i].untagged.length>0) {
 					cell.innerHTML += "<br/>Untagged: "+config[i].untagged.join(", ");
@@ -173,6 +174,11 @@ function renderTo(target, config) {
 				if(config[i].tagged.length>0) {
 					cell.innerHTML += "<br/>Tagged: "+config[i].tagged.join(", ");
 				}
+
+				var vlanClasses = config[i].tagged.map(function(o){ return "T"+o.replace(" ","") }).join(" ");
+				vlanClasses += " " + config[i].tagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
+				cell.className += " " + vlanClasses;
+
 				cell.title = i + ": " + JSON.stringify(config[i].config);
 				switchRows[row].appendChild(cell);
 			}
@@ -203,8 +209,9 @@ function renderTo(target, config) {
 			break;
 			case "Vlan": {
 				
-			}*/
+			}
 			break;
+			*/
 		}
 	}
 	
@@ -981,4 +988,3 @@ dell#exit
 	<div id="target"></div>
 </body>
 </html>
- 
