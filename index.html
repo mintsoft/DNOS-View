@@ -26,6 +26,10 @@
 		margin-top: 5px;
 		margin-right: 5px;
 	}
+	.highlight {
+		border-color: red;
+	}
+
 </style>
 <script>
 
@@ -195,20 +199,38 @@ function renderTo(target, config) {
 					config[i].untagged.join(", ")+
 					"<br/><br/>Tagged:"+
 					config[i].tagged.join(", ");
-				otherInfoContainer.appendChild(info)
+
+				info.dataset.associatedclassname = config[i].name.replace(" ","");
+				
+				info.addEventListener("mouseover",function(e){
+					//highlight the interfaces associated with this
+					var tds = document.querySelectorAll("#target table td");
+					for(var i in tds) {
+						if(tds[i].className.match(new RegExp(this.dataset.associatedclassname+"\\b"))) 
+						{
+							tds[i].className += " highlight";
+						}
+					}
+				}, false);
+				info.addEventListener("mouseout", function(e){
+					//de-highlight the interfaces associated with this
+					var tds = document.querySelectorAll("#target table td");
+					for(var i in tds) {
+						if(tds[i].className)
+							tds[i].className = tds[i].className.replace("highlight", "");
+					}
+				});
+				otherInfoContainer.appendChild(info);	
 			}
 			break;
 			/*
 			case "ManagementEthernet": {
-				
 			}
 			break;
 			case "Port-channel": {
-				
 			}
 			break;
 			case "Vlan": {
-				
 			}
 			break;
 			*/
@@ -988,3 +1010,4 @@ dell#exit
 	<div id="target"></div>
 </body>
 </html>
+ 
