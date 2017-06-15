@@ -180,7 +180,7 @@ function renderTo(target, config) {
 				}
 
 				var vlanClasses = config[i].tagged.map(function(o){ return "T"+o.replace(" ","") }).join(" ");
-				vlanClasses += " " + config[i].tagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
+				vlanClasses += " " + config[i].untagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
 				cell.className += " " + vlanClasses;
 
 				cell.title = i + ": " + JSON.stringify(config[i].config);
@@ -203,16 +203,20 @@ function renderTo(target, config) {
 				info.dataset.associatedclassname = config[i].name.replace(" ","");
 				
 				info.addEventListener("mouseover",function(e){
+					this.className += " highlight";
+
 					//highlight the interfaces associated with this
 					var tds = document.querySelectorAll("#target table td");
 					for(var i in tds) {
-						if(tds[i].className.match(new RegExp(this.dataset.associatedclassname+"\\b"))) 
+						if(tds[i].className.match(new RegExp("(\\b|[UT])"+this.dataset.associatedclassname+"\\b"))) 
 						{
 							tds[i].className += " highlight";
 						}
 					}
 				}, false);
 				info.addEventListener("mouseout", function(e){
+					this.className = this.className.replace("highlight", "");
+
 					//de-highlight the interfaces associated with this
 					var tds = document.querySelectorAll("#target table td");
 					for(var i in tds) {
