@@ -193,11 +193,6 @@ function renderTo(target, config) {
 	var otherInfoContainer = el("div");
 	var table = el("table");
 	var switchRows = [];
-	var numberOfRows = Object.keys(config).length/24;
-	
-	for(var x=0; x<=numberOfRows; ++x) {
-		switchRows[x] = el("tr");
-	}
 	
 	for(i in config) {
 		switch(config[i].type) {
@@ -209,11 +204,14 @@ function renderTo(target, config) {
 					row += 1;
 				}
 
+				if(!switchRows[row]) {
+					switchRows[row] = el("tr");
+				}
+
 				var cell = el("td");
 				var tooltip = "";
 				cell.innerHTML = "<span class='portName'>" + config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum + "</span>";
 				if(config[i].portChannelMembership) {
-					//cell.innerHTML += "<br />" + config[i].portChannelMembership;
 					cell.className += " " + config[i].portChannelMembership.replace(" ","");
 					tooltip += " Part of: " +  config[i].portChannelMembership;
 				}
@@ -222,11 +220,9 @@ function renderTo(target, config) {
 					tooltip += " Port-Channel Type: " +  config[i].portChannelMethod;
 				}
 				if(config[i].untagged.length>0) {
-					//cell.innerHTML += "<br/>U: "+config[i].untagged.join(", ");
 					tooltip += " Untagged VLAN Membership: "+config[i].untagged.join(", ");
 				}
 				if(config[i].tagged.length>0) {
-					//cell.innerHTML += "<br/>T: "+config[i].tagged.join(", ");
 					tooltip += " Tagged VLAN Membership: "+config[i].tagged.join(", ");
 				}
 
@@ -284,7 +280,7 @@ function renderTo(target, config) {
 	}
 	
 	
-	for(x=0; x<numberOfRows; ++x) {
+	for(x=0; x < switchRows.length; ++x) {
 		table.appendChild(switchRows[x]);
 	}
 	target.appendChild(table);
