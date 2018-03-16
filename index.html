@@ -213,7 +213,7 @@ function renderTo(target, config) {
 				var tooltip = "";
 				cell.innerHTML = "<span class='portName'>" + config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum + "</span>";
 				if(config[i].portChannelMembership) {
-					cell.innerHTML += "<br />" + config[i].portChannelMembership;
+					//cell.innerHTML += "<br />" + config[i].portChannelMembership;
 					cell.className += " " + config[i].portChannelMembership.replace(" ","");
 					tooltip += " Part of: " +  config[i].portChannelMembership;
 				}
@@ -222,11 +222,11 @@ function renderTo(target, config) {
 					tooltip += " Port-Channel Type: " +  config[i].portChannelMethod;
 				}
 				if(config[i].untagged.length>0) {
-					cell.innerHTML += "<br/>U: "+config[i].untagged.join(", ");
+					//cell.innerHTML += "<br/>U: "+config[i].untagged.join(", ");
 					tooltip += " Untagged VLAN Membership: "+config[i].untagged.join(", ");
 				}
 				if(config[i].tagged.length>0) {
-					cell.innerHTML += "<br/>T: "+config[i].tagged.join(", ");
+					//cell.innerHTML += "<br/>T: "+config[i].tagged.join(", ");
 					tooltip += " Tagged VLAN Membership: "+config[i].tagged.join(", ");
 				}
 
@@ -246,11 +246,12 @@ function renderTo(target, config) {
 				var info = el("span");
 				info.className = "interface";
 				info.innerHTML = "<b>"+config[i].name + "</b><br/>" + 
-					config[i].config.join("<br/>") + 
-					"<br/>Untagged:"+
-					config[i].untagged.join(", ")+
-					"<br/><br/>Tagged:"+
-					config[i].tagged.join(", ");
+					config[i].config.join("<br/>") + ( config[i].type != "Vlan" ? 
+						"<br/>Untagged:"+
+						config[i].untagged.join(", ")+
+						"<br/><br/>Tagged:"+
+						config[i].tagged.join(", ") : ""
+					);
 
 				info.dataset.associatedclassname = config[i].name.replace(" ","");
 				
