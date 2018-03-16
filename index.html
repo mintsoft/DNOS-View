@@ -47,17 +47,14 @@
 		background: #fff;
 	}
 	span.highlight {
-		border-color: red;
+		background: #fccac9;
 	}
 	td.highlight.U {
-		/*background: radial-gradient(white 80%, #f4f3a6);*/
 		background: #fcfccf;
 	}
 	td.highlight.T {
-		/*background: radial-gradient(white 80%, #b3a6f4);*/
 		background: #d6cffc;
 	}
-
 	td.highlight.U:after {
 		position: absolute;
 		content: "Untagged";
@@ -66,8 +63,11 @@
 		position: absolute;
 		content: "Tagged";
 	}
-
-
+	div.otherInfo span {
+		padding: 5px;
+		min-height: 65px;
+		vertical-align: text-top;
+	}
 </style>
 <script>
 
@@ -235,6 +235,8 @@ function renderTo(target, config) {
 	var otherInfoContainer = el("div");
 	var table = el("table");
 	var switchRows = [];
+
+	otherInfoContainer.className = "otherInfo";
 	
 	for(i in config) {
 		switch(config[i].type) {
