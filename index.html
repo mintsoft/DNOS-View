@@ -13,7 +13,7 @@
 		background: #444;
 	}
 	td {
-		background: #eee;
+		background: #ddd;
 		border: 1px solid #222222;
 		width: 50px;
 		height: 50px;
@@ -30,7 +30,7 @@
 	}
 	td.shutdown span.portName {
 		background: #000;
-		color: #eee;
+		color: #ddd;
 	}
 	td.noshutdown span.portName {
 		background: #0f0;
@@ -188,6 +188,7 @@ function parseConfig(input) {
 	}
 	return output;
 }
+
 function renderTo(target, config) {
 	target.innerHTML = "";
 	var otherInfoContainer = el("div");
@@ -273,7 +274,16 @@ function renderTo(target, config) {
 							tds[i].className = tds[i].className.replace("highlight", "");
 					}
 				});
-				otherInfoContainer.appendChild(info);	
+				var targetContainer = otherInfoContainer.getElementsByClassName(config[i].type);
+				if(targetContainer.length === 0 )
+				{
+					targetContainer = el("div");
+					targetContainer.className = config[i].type;
+					otherInfoContainer.appendChild(targetContainer);
+				} else {
+					targetContainer  = targetContainer[0];
+				}
+				targetContainer.appendChild(info);
 			}
 			break;
 		}
