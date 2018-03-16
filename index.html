@@ -78,7 +78,7 @@ function parseConfig(input) {
 				*/
 				var matches = undefined;
 				for(var cf in buffer[states.main]) {
-					var cl = buffer[states.main][cf]
+					var cl = buffer[states.main][cf];
 
 					if(matches = cl.match(/^ ((?:un)?tagged) ([A-Za-z\-]+) (.*)$/)) {
 						matches;
@@ -136,8 +136,30 @@ function parseConfig(input) {
 
 						for(var ifNo=startInterfaceNo; ifNo <= endInterfaceNo;++ifNo) {
 							output[interfaceName+" "+startUnitNo+"/"+ifNo].portChannelMembership = states[states.main].name;
+							output[interfaceName+" "+startUnitNo+"/"+ifNo].portChannelMethod = "Static";
 						}
 					}
+				}
+			} else if (states[states.main].type.match(/^[A-Za-z]+Ethernet/)) {
+				var dynamicPortChannelMembership = undefined;
+				var dynamicPortChannelProtocol = undefined;
+				var dynamicPortChannelMode = undefined;
+
+				for(var cf in buffer[states.main]) {
+					var cl = buffer[states.main][cf];
+					var matches = undefined;
+
+					if(matches = cl.match(/^[ ]+port-channel-protocol (.*)/)) {
+						dynamicPortChannelProtocol = matches[1];
+					} else if(matches = cl.match(/^[ ]+port-channel ([0-9]+) mode (.*)/)) {
+						dynamicPortChannelMembership = "Port-channel " + matches[1];
+						dynamicPortChannelMode = matches[2];
+					}
+				}
+				if(dynamicPortChannelMembership && dynamicPortChannelProtocol)
+				{
+					output[states.i.name].portChannelMembership = dynamicPortChannelMembership
+					output[states.i.name].portChannelMethod =  dynamicPortChannelProtocol + " " + dynamicPortChannelMode;
 				}
 			}
 
@@ -170,8 +192,12 @@ function renderTo(target, config) {
 				var cell = el("td");
 				cell.innerHTML = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				if(config[i].portChannelMembership) {
-					cell.innerHTML += config[i].portChannelMembership;
-					cell.className += config[i].portChannelMembership.replace(" ","");
+					cell.innerHTML += "<br />" + config[i].portChannelMembership;
+					cell.className += " " + config[i].portChannelMembership.replace(" ","");
+				}
+				if(config[i].portChannelMethod) {
+					cell.innerHTML += "<br />" + config[i].portChannelMethod;
+					cell.className += " " + config[i].portChannelMethod.replace(" ","");
 				}
 				if(config[i].untagged.length>0) {
 					cell.innerHTML += "<br/>Untagged: "+config[i].untagged.join(", ");
@@ -296,547 +322,593 @@ interface TenGigabitEthernet 1/1
  no ip address
  switchport
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/2
  no ip address
  switchport
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/3
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/4
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/5
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/6
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/7
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/8
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/9
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/10
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/11
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/12
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/13
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/14
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/15
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/16
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/17
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/18
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/19
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/20
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/21
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/22
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/23
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/24
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/25
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/26
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/27
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/28
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/29
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/30
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/31
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/32
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/33
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/34
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/35
  no ip address
- portmode hybrid
  switchport
- spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/36
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/37
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/38
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/39
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 17 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 1/40
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 18 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 1/41
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 15 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 1/42
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 16 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 1/43
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 13 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/44
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 14 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/45
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 11 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/46
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 12 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/47
  no ip address
  no shutdown
-!
+! 
 interface TenGigabitEthernet 1/48
  no ip address
  no shutdown
-!
+! 
 interface fortyGigE 1/49
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/50
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/52
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/54
  no ip address
  shutdown
-!
+! 
 stack-unit 2 provision S4048T-ON
-!
+! 
 stack-unit 2 stack-group 14
-!
+! 
 stack-unit 2 stack-group 16
-!
+! 
 interface TenGigabitEthernet 2/1
  no ip address
  switchport
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/2
  no ip address
  switchport
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/3
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/4
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/5
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/6
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/7
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/8
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/9
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/10
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/11
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/12
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/13
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/14
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/15
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/16
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/17
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/18
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/19
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/20
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/21
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/22
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/23
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/24
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/25
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/26
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/27
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/28
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/29
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/30
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/31
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/32
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/33
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/34
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/35
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/36
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/37
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/38
  no ip address
  switchport
  spanning-tree rstp edge-port 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/39
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 18 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 2/40
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 17 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 2/41
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 16 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 2/42
  no ip address
- no shutdown
-!
+!  
+ port-channel-protocol LACP 
+  port-channel 15 mode active 
+ shutdown
+! 
 interface TenGigabitEthernet 2/43
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 14 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/44
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 13 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/45
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 12 mode active 
  no shutdown
-!
+! 
 interface TenGigabitEthernet 2/46
  no ip address
+!  
+ port-channel-protocol LACP 
+  port-channel 11 mode active 
  no shutdown
 !
 interface TenGigabitEthernet 2/47
@@ -873,16 +945,16 @@ interface ManagementEthernet 2/1
 !
 interface ManagementEthernet 3/1
  shutdown
-!
+! 
 interface ManagementEthernet 4/1
  shutdown
-!
+! 
 interface ManagementEthernet 5/1
  shutdown
-!
+! 
 interface ManagementEthernet 6/1
  shutdown
-!
+! 
 interface Port-channel 1
  no ip address
  portmode hybrid
@@ -890,71 +962,55 @@ interface Port-channel 1
  channel-member TenGigabitEthernet 1/47-1/48
  channel-member TenGigabitEthernet 2/47-2/48
  no shutdown
-!
+! 
 interface Port-channel 11
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/45
- channel-member TenGigabitEthernet 2/46
  no shutdown
-!
+! 
 interface Port-channel 12
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/46
- channel-member TenGigabitEthernet 2/45
  no shutdown
-!
+! 
 interface Port-channel 13
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/43
- channel-member TenGigabitEthernet 2/44
  no shutdown
-!
+! 
 interface Port-channel 14
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/44
- channel-member TenGigabitEthernet 2/43
  no shutdown
-!
+! 
 interface Port-channel 15
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/41
- channel-member TenGigabitEthernet 2/42
  no shutdown
-!
+! 
 interface Port-channel 16
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/42
- channel-member TenGigabitEthernet 2/41
  no shutdown
-!
+! 
 interface Port-channel 17
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/39
- channel-member TenGigabitEthernet 2/40
  no shutdown
-!
+! 
 interface Port-channel 18
  no ip address
  portmode hybrid
  switchport
- channel-member TenGigabitEthernet 1/40
- channel-member TenGigabitEthernet 2/39
  no shutdown
-!
+! 
 interface Vlan 1
 !untagged TenGigabitEthernet 1/7-1/38
 !untagged TenGigabitEthernet 2/7-2/38
