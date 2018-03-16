@@ -186,6 +186,21 @@ function parseConfig(input) {
 			states.main = "s";
 		}
 	}
+
+	for(var interfaceName in output)
+	{
+		var interface = output[interfaceName];
+		if(interface.type.match(/[A-Za-z]+Ethernet/) && interface.portChannelMembership) {
+			var pc = interface.portChannelMembership;
+			interface.tagged = output[pc].tagged;
+			interface.untagged = output[pc].untagged;
+		}
+
+		if(interface.untagged.length === 0 && ! interface.type.match(/^Management/)) {
+			interface.untagged = ["Vlan 1"];
+		}
+	}
+
 	return output;
 }
 
@@ -212,6 +227,7 @@ function renderTo(target, config) {
 				var cell = el("td");
 				var tooltip = "";
 				cell.innerHTML = "<span class='portName'>" + config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum + "</span>";
+
 				if(config[i].portChannelMembership) {
 					cell.className += " " + config[i].portChannelMembership.replace(" ","");
 					tooltip += " Part of: " +  config[i].portChannelMembership;
@@ -229,6 +245,7 @@ function renderTo(target, config) {
 
 				var vlanClasses = config[i].tagged.map(function(o){ return "T"+o.replace(" ","") }).join(" ");
 				vlanClasses += " " + config[i].untagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
+
 				cell.className += " " + vlanClasses;
 
 				tooltip += "\r\n" + i + ": " + JSON.stringify(config[i].config);
