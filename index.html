@@ -4,15 +4,23 @@
 <meta charset="utf-8" />
 <title>DNOS-View</title>
 <style>
+	body {
+		font-family: consolas, fixed;
+		font-size: 10px;
+	}
 	table {
 		border: 1px solid black;
+		background: #444;
 	}
 	td {
-		border: 1px solid black;
-		width: 4em;
-		height: 4em;
+		background: #eee;
+		border: 1px solid #222222;
+		width: 50px;
+		height: 50px;
+		text-overflow: ellipsis;
+		overflow: hidden;
 		margin: 0;
-		padding: 0;
+		padding: 5px;
 	}
 	.shutdown {
 		background: #444;
@@ -26,9 +34,13 @@
 		margin-top: 5px;
 		margin-right: 5px;
 	}
-	.highlight {
+	td.highlight {
+		background: #fff;
+	}
+	span.highlight {
 		border-color: red;
 	}
+
 
 </style>
 <script>
@@ -190,27 +202,32 @@ function renderTo(target, config) {
 				}
 
 				var cell = el("td");
+				var tooltip = "";
 				cell.innerHTML = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
 				if(config[i].portChannelMembership) {
 					cell.innerHTML += "<br />" + config[i].portChannelMembership;
 					cell.className += " " + config[i].portChannelMembership.replace(" ","");
+					tooltip += " Part of: " +  config[i].portChannelMembership;
 				}
 				if(config[i].portChannelMethod) {
-					cell.innerHTML += "<br />" + config[i].portChannelMethod;
 					cell.className += " " + config[i].portChannelMethod.replace(" ","");
+					tooltip += " Port-Channel Type: " +  config[i].portChannelMethod;
 				}
 				if(config[i].untagged.length>0) {
-					cell.innerHTML += "<br/>Untagged: "+config[i].untagged.join(", ");
+					cell.innerHTML += "<br/>U: "+config[i].untagged.join(", ");
+					tooltip += " Untagged VLAN Membership: "+config[i].untagged.join(", ");
 				}
 				if(config[i].tagged.length>0) {
-					cell.innerHTML += "<br/>Tagged: "+config[i].tagged.join(", ");
+					cell.innerHTML += "<br/>T: "+config[i].tagged.join(", ");
+					tooltip += " Tagged VLAN Membership: "+config[i].tagged.join(", ");
 				}
 
 				var vlanClasses = config[i].tagged.map(function(o){ return "T"+o.replace(" ","") }).join(" ");
 				vlanClasses += " " + config[i].untagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
 				cell.className += " " + vlanClasses;
 
-				cell.title = i + ": " + JSON.stringify(config[i].config);
+				tooltip += "\r\n" + i + ": " + JSON.stringify(config[i].config);
+				cell.title = tooltip.trim();
 				switchRows[row].appendChild(cell);
 			}
 			break;
@@ -254,17 +271,6 @@ function renderTo(target, config) {
 				otherInfoContainer.appendChild(info);	
 			}
 			break;
-			/*
-			case "ManagementEthernet": {
-			}
-			break;
-			case "Port-channel": {
-			}
-			break;
-			case "Vlan": {
-			}
-			break;
-			*/
 		}
 	}
 	
