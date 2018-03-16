@@ -147,6 +147,7 @@ function parseConfig(input) {
 	return output;
 }
 function renderTo(target, config) {
+	target.innerHTML = "";
 	var otherInfoContainer = el("div");
 	var table = el("table");
 	var switchRows = [];
