@@ -26,7 +26,8 @@
 	td span.portName {
 		position: absolute;
 		top: 1px;
-		left: 1px;
+		left: 2px;
+		padding: 1px 2px;
 	}
 	td.shutdown span.portName {
 		background: #000;
@@ -79,7 +80,8 @@ function parseConfig(input) {
 				unitNum: p[2],
 				portNum: p[3],
 				tagged: [],
-				untagged: []
+				untagged: [],
+				shutdown: ""
 			};
 			
 			buffer.i=[];
@@ -154,7 +156,7 @@ function parseConfig(input) {
 							endInterfaceNo = startInterfaceNo;
 						}
 
-						for(var ifNo=startInterfaceNo; ifNo <= endInterfaceNo;++ifNo) {
+						for(var ifNo = startInterfaceNo; ifNo <= endInterfaceNo; ++ifNo) {
 							output[interfaceName+" "+startUnitNo+"/"+ifNo].portChannelMembership = states[states.main].name;
 							output[interfaceName+" "+startUnitNo+"/"+ifNo].portChannelMethod = "Static";
 						}
@@ -180,6 +182,13 @@ function parseConfig(input) {
 				{
 					output[states.i.name].portChannelMembership = dynamicPortChannelMembership
 					output[states.i.name].portChannelMethod =  dynamicPortChannelProtocol + " " + dynamicPortChannelMode;
+				}
+			}
+
+			for(var cf in buffer[states.main]) {
+				var cl = buffer[states.main][cf];
+				if(matches = cl.match(/(no )?shutdown/)) {
+					output[states.i.name].shutdown = matches[0].replace(" ","");
 				}
 			}
 
@@ -247,6 +256,7 @@ function renderTo(target, config) {
 				vlanClasses += " " + config[i].untagged.map(function(o){ return "U"+o.replace(" ","") }).join(" ");
 
 				cell.className += " " + vlanClasses;
+				cell.className += " " + config[i].shutdown;
 
 				tooltip += "\r\n" + i + ": " + JSON.stringify(config[i].config);
 				cell.title = tooltip.trim();
@@ -1109,4 +1119,3 @@ dell#exit
 	<div id="target"></div>
 </body>
 </html>
- 
