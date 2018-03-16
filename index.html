@@ -34,7 +34,7 @@
 		color: #ddd;
 	}
 	td.noshutdown span.portName {
-		background: #0f0;
+		background: #cef4a6;
 		color: black;
 	}
 	.interface {
@@ -48,6 +48,14 @@
 	}
 	span.highlight {
 		border-color: red;
+	}
+	td.highlight.U {
+		/*background: radial-gradient(white 80%, #f4f3a6);*/
+		background: #fcfccf;
+	}
+	td.highlight.T {
+		/*background: radial-gradient(white 80%, #b3a6f4);*/
+		background: #d6cffc;
 	}
 
 
@@ -285,9 +293,9 @@ function renderTo(target, config) {
 					//highlight the interfaces associated with this
 					var tds = document.querySelectorAll("#target table td");
 					for(var i in tds) {
-						if(tds[i].className.match(new RegExp("(\\b|[UT])"+this.dataset.associatedclassname+"\\b"))) 
+						if(matches = tds[i].className.match(new RegExp("(\\b|[UT])"+this.dataset.associatedclassname+"\\b"))) 
 						{
-							tds[i].className += " highlight";
+							tds[i].className += " highlight "+ matches[1];
 						}
 					}
 				}, false);
@@ -298,7 +306,7 @@ function renderTo(target, config) {
 					var tds = document.querySelectorAll("#target table td");
 					for(var i in tds) {
 						if(tds[i].className)
-							tds[i].className = tds[i].className.replace("highlight", "");
+							tds[i].className = tds[i].className.replace("highlight", "").replace(/\b[UT]\b/,"");
 					}
 				});
 				var targetContainer = otherInfoContainer.getElementsByClassName(config[i].type);
