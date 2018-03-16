@@ -48,7 +48,7 @@ function parseConfig(input) {
 	var buffer = {"i":[], "s":[]};
 	var states = {"main": "s", "i": {}};
 	for(var x=0; x<lines.length; ++x) {
-		var l = lines[x].replace(/~+$/, '');
+		var l = lines[x].replace(/~+$/, '').replace(/\s+$/,'');
 		if(l.match(/^interface/)) {
 			states.main = "i";
 			
@@ -79,7 +79,7 @@ function parseConfig(input) {
 				var matches = undefined;
 				for(var cf in buffer[states.main]) {
 					var cl = buffer[states.main][cf]
-					//(?:(([0-9])\/([0-9]+))(?:-(([0-9])\/([0-9]+)))?)|(?:([0-9]+(?:-[0-9]+)?)(?:,([0-9]+(?:-[0-9]+)?))*)
+
 					if(matches = cl.match(/^ ((?:un)?tagged) ([A-Za-z\-]+) (.*)$/)) {
 						matches;
 						var typeOfMembership = matches[1];
