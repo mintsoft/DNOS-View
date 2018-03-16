@@ -21,12 +21,20 @@
 		overflow: hidden;
 		margin: 0;
 		padding: 5px;
+		position: relative;
 	}
-	.shutdown {
-		background: #444;
+	td span.portName {
+		position: absolute;
+		top: 1px;
+		left: 1px;
 	}
-	.noshutdown {
-		background: #ddd;
+	td.shutdown span.portName {
+		background: #000;
+		color: #eee;
+	}
+	td.noshutdown span.portName {
+		background: #0f0;
+		color: black;
 	}
 	.interface {
 		display: inline-block;
@@ -203,7 +211,7 @@ function renderTo(target, config) {
 
 				var cell = el("td");
 				var tooltip = "";
-				cell.innerHTML = config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum;
+				cell.innerHTML = "<span class='portName'>" + config[i].type.substring(0,2) + config[i].unitNum + "/" + config[i].portNum + "</span>";
 				if(config[i].portChannelMembership) {
 					cell.innerHTML += "<br />" + config[i].portChannelMembership;
 					cell.className += " " + config[i].portChannelMembership.replace(" ","");
