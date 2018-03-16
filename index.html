@@ -48,7 +48,7 @@ function parseConfig(input) {
 	var buffer = {"i":[], "s":[]};
 	var states = {"main": "s", "i": {}};
 	for(var x=0; x<lines.length; ++x) {
-		var l = lines[x].replace(/~+$/, '').replace(/\s+$/,'');
+		var l = lines[x].replace(/~+$/, '').replace(/^![ ]{2}$/,'').replace(/\s+$/,'');
 		if(l.match(/^interface/)) {
 			states.main = "i";
 			
